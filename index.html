@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="th">
 
 <head>
@@ -12,7 +12,7 @@
     href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
-  <link rel="icon" type="image/png" href="boba-cup.png" />
+  <link rel="icon" type="image/png" href="pic/boba-cup.png" />
 </head>
 
 <body>
@@ -24,7 +24,7 @@
   <nav id="navbar">
     <div class="nav-inner">
       <div class="nav-logo">
-        <img src="boba-cup.png" alt="Boba Tea Logo" class="nav-logo-img" />
+        <img src="pic/boba-cup.png" alt="Boba Tea Logo" class="nav-logo-img" />
         <span>Shanom</span>
       </div>
       <ul class="nav-links">
@@ -58,7 +58,7 @@
     <div class="hero-visual">
       <div class="hero-avatar-wrap">
         <div class="avatar-glow"></div>
-        <img src="avatar.png" alt="Shanom" class="hero-avatar" />
+        <img src="pic/avatar.png" alt="Shanom" class="hero-avatar" />
         <div class="floating-boba boba-1">🧋</div>
         <div class="floating-boba boba-2">🎵</div>
         <div class="floating-boba boba-3">✨</div>
@@ -95,22 +95,26 @@
             <span class="tag">Motion Graphics</span>
           </div>
         </div>
-        <div class="about-stats">
-          <div class="stat-card">
-            <div class="stat-num">20<span>+</span></div>
-            <div class="stat-label">ผลงานเพลง</div>
+        <div class="about-slideshow">
+          <div class="slideshow-frame">
+            <div class="slide active" data-index="0">
+              <img src="pic/1.png" alt="Work preview 1" />
+            </div>
+            <div class="slide" data-index="1">
+              <img src="pic/2.png" alt="Work preview 2" />
+            </div>
+            <div class="slide" data-index="2">
+              <img src="pic/3.png" alt="Work preview 3" />
+            </div>
+            <div class="slide" data-index="3">
+              <img src="pic/4.png" alt="Work preview 4" />
+            </div>
           </div>
-          <div class="stat-card">
-            <div class="stat-num">15<span>+</span></div>
-            <div class="stat-label">Motion Graphics</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-num">∞</div>
-            <div class="stat-label">แก้วชานมที่ดื่ม</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-num">100<span>%</span></div>
-            <div class="stat-label">ความตั้งใจ</div>
+          <div class="slideshow-dots">
+            <button class="dot active" data-dot="0"></button>
+            <button class="dot" data-dot="1"></button>
+            <button class="dot" data-dot="2"></button>
+            <button class="dot" data-dot="3"></button>
           </div>
         </div>
       </div>
@@ -175,7 +179,7 @@
   <footer>
     <div class="footer-inner">
       <div class="footer-logo">
-        <img src="boba-cup.png" alt="Boba" class="footer-boba" />
+        <img src="pic/boba-cup.png" alt="Boba" class="footer-boba" />
         <span>Shanom</span>
       </div>
       <p>Made with 🧋 & ❤️ by Shanom</p>
