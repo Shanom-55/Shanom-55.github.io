@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Shanom Portfolio</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+
+<body>
+
+  <!-- ===== Login Page ===== -->
+  <div id="loginPage">
+    <div class="login-card">
+      <div class="login-logo">🧋</div>
+      <h1>Shanom Admin</h1>
+      <p class="login-sub">กรุณา login เพื่อจัดการผลงาน</p>
+
+      <div class="form-group">
+        <label for="loginEmail">Email</label>
+        <input type="email" id="loginEmail" placeholder="your@email.com" autocomplete="email" />
+      </div>
+      <div class="form-group">
+        <label for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" />
+      </div>
+
+      <button class="btn-primary" id="loginBtn" onclick="handleLogin()">
+        <span id="loginBtnText">Login</span>
+      </button>
+
+      <div class="login-error" id="loginError"></div>
+    </div>
+  </div>
+
+  <!-- ===== Admin Dashboard ===== -->
+  <div id="adminPage">
+
+    <!-- Top Bar -->
+    <header class="admin-topbar">
+      <div class="topbar-brand">
+        🧋 Shanom
+        <span>Admin</span>
+      </div>
+      <button class="btn-logout" onclick="handleLogout()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+          <polyline points="16 17 21 12 16 7" />
+          <line x1="21" y1="12" x2="9" y2="12" />
+        </svg>
+        Logout
+      </button>
+    </header>
+
+    <!-- Body -->
+    <main class="admin-body">
+
+      <!-- Stats -->
+      <div class="admin-stats">
+        <div class="stat-box">
+          <div class="stat-number" id="statTotal">—</div>
+          <div class="stat-label">ผลงานทั้งหมด</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number" id="statMusic">—</div>
+          <div class="stat-label">เพลง</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number" id="statLyrics">—</div>
+          <div class="stat-label">Lyrics Video</div>
+        </div>
+      </div>
+
+      <!-- Works List -->
+      <div class="section-header">
+        <h2>ผลงานทั้งหมด</h2>
+        <button class="btn-add" onclick="openModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          เพิ่มผลงาน
+        </button>
+      </div>
+
+      <div class="works-table-wrap">
+        <div class="loading-spinner" id="tableLoader">
+          <div class="spinner"></div> กำลังโหลด...
+        </div>
+        <table class="works-table" id="worksTable" style="display:none;">
+          <thead>
+            <tr>
+              <th>ชื่อผลงาน</th>
+              <th>ประเภท</th>
+              <th>Genre / Tag</th>
+              <th>ปี</th>
+              <th>จัดการ</th>
+            </tr>
+          </thead>
+          <tbody id="worksTableBody"></tbody>
+        </table>
+        <div class="empty-state" id="emptyState" style="display:none;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
+          <p>ยังไม่มีผลงาน กด "เพิ่มผลงาน" เพื่อเริ่มต้น</p>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ===== Add / Edit Modal ===== -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalTitle">เพิ่มผลงาน</h3>
+        <button class="btn-close-modal" onclick="closeModal()">✕</button>
+      </div>
+
+      <div class="form-group">
+        <label for="fTitle">ชื่อผลงาน *</label>
+        <input type="text" id="fTitle" placeholder="เช่น ชานมยามเย็น" />
+      </div>
+
+      <div class="form-group">
+        <label for="fDesc">คำอธิบาย</label>
+        <textarea id="fDesc" placeholder="อธิบายผลงานสั้นๆ..."></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="fType">ประเภท *</label>
+          <select id="fType">
+            <option value="music">🎵 เพลง</option>
+            <option value="lyrics">🎥 Lyrics Video</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="fColor">สีการ์ด</label>
+          <select id="fColor">
+            <option value="">น้ำตาล (default)</option>
+            <option value="green">เขียว</option>
+            <option value="warm">ส้ม</option>
+            <option value="brown">น้ำตาลเข้ม</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="fGenre">Genre / หัวข้อ</label>
+          <input type="text" id="fGenre" placeholder="เช่น Lo-fi / Chill" />
+        </div>
+        <div class="form-group">
+          <label for="fYear">ปี</label>
+          <input type="text" id="fYear" placeholder="เช่น 2024" maxlength="4" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="fTag">Tag</label>
+        <input type="text" id="fTag" placeholder="เช่น Single, EP, Official Lyric Video" />
+      </div>
+
+      <div class="form-group">
+        <label for="fYoutube">YouTube Link (ถ้ามี)</label>
+        <input type="text" id="fYoutube" placeholder="เช่น https://youtu.be/..." />
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeModal()">ยกเลิก</button>
+        <button class="btn-save" id="saveBtn" onclick="saveWork()">
+          <span id="saveBtnText">บันทึก</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Firebase SDKs (compat version — ใช้งาน global `firebase` ได้เลย) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="admin.js"></script>
+
+</body>
+
+</html>

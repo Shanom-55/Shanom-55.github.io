@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shanom — Music Producer & Lyrics Video Creator</title>
+  <meta name="description"
+    content="Shanom — Music Producer & Lyrics Video Creator. ผลงานเพลงและ Lyrics Video สุดครีเอทีฟ ในธีมชานมไข่มุก" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- Boba Pearl Canvas Background -->
+  <canvas id="bobaCanvas"></canvas>
+
+  <!-- Navigation -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo">
+        <img src="boba-cup.png" alt="Boba Tea Logo" class="nav-logo-img" />
+        <span>Shanom</span>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#hero" id="nav-home">Home</a></li>
+        <li><a href="#about" id="nav-about">About</a></li>
+        <li><a href="#works" id="nav-works">Works</a></li>
+        <li><a href="#contact" id="nav-contact">Follow</a></li>
+      </ul>
+      <button class="nav-burger" id="navBurger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="hero">
+    <div class="hero-content">
+      <div class="hero-badge">Music Producer & Lyrics Video Creator</div>
+      <h1 class="hero-title">
+        Hi, I'm <span class="highlight">Shanom</span>
+      </h1>
+      <p class="hero-sub">
+        ผมสร้างเพลงและ Lyrics Video ที่ทำให้ทุกคำพูดมีชีวิต<br />
+        <em>Making music that feels like a warm boba sip</em>
+      </p>
+      <div class="hero-cta">
+        <a href="#works" class="btn-primary" id="hero-cta-works">ดูผลงาน</a>
+        <a href="#contact" class="btn-outline" id="hero-cta-contact">ติดตามผม</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-avatar-wrap">
+        <div class="avatar-glow"></div>
+        <img src="avatar.png" alt="Shanom" class="hero-avatar" />
+        <div class="floating-boba boba-1">🧋</div>
+        <div class="floating-boba boba-2">🎵</div>
+        <div class="floating-boba boba-3">✨</div>
+        <div class="floating-boba boba-4">🎧</div>
+      </div>
+    </div>
+    <div class="scroll-hint">
+      <div class="scroll-arrow"></div>
+      <span>scroll down</span>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about">
+    <div class="section-container">
+      <div class="section-label">— About Me —</div>
+      <h2 class="section-title">ผมคือใคร?</h2>
+      <div class="about-grid">
+        <div class="about-text">
+          <p>
+            สวัสดี! ผมชื่อ <strong>Shanom</strong> — Music Producer และ Lyrics Video Creator
+            ที่หลงรักในการสร้างเสียงและภาพไปพร้อมกัน 🎹
+          </p>
+          <p>
+            ไม่ว่าจะเป็นการแต่งเพลง โปรดิวซ์เพลงตั้งแต่ต้นจนจบ หรือทำ Lyrics Video ที่ทำให้
+            ท่วงทำนองและเนื้อเพลงเล่าเรื่องได้สวยงาม — ผมทุ่มเทกับทุกชิ้นงาน
+          </p>
+          <p>
+            แรงบันดาลใจของผมมาจากทุกอย่างรอบข้าง ตั้งแต่เสียงฝนตก ไปจนถึงเสียงลูกไข่มุก
+            กระทบก้นแก้ว ชานม ☕
+          </p>
+          <div class="about-tags">
+            <span class="tag">🎹 Music Production</span>
+            <span class="tag">🎥 Lyrics Video</span>
+          </div>
+        </div>
+        <div class="about-stats">
+          <div class="stat-card">
+            <div class="stat-num">20<span>+</span></div>
+            <div class="stat-label">ผลงานเพลง</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">15<span>+</span></div>
+            <div class="stat-label">Lyrics Videos</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">∞</div>
+            <div class="stat-label">แก้วชานมที่ดื่ม</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">100<span>%</span></div>
+            <div class="stat-label">ความตั้งใจ</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Works Section -->
+  <section id="works">
+    <div class="section-container">
+      <div class="section-label">— My Works —</div>
+      <h2 class="section-title">ผลงานที่ผ่านมา</h2>
+
+      <div class="works-tabs">
+        <button class="tab-btn active" data-tab="music" id="tab-music">🎵 เพลง</button>
+        <button class="tab-btn" data-tab="lyrics" id="tab-lyrics">🎥 Lyrics Video</button>
+      </div>
+
+      <div class="works-grid" id="worksGrid">
+        <div style="text-align: center; grid-column: 1 / -1; padding: 3rem; color: var(--text-light);" id="worksLoader">
+          กำลังโหลดผลงาน...
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact">
+    <div class="section-container contact-inner">
+      <div class="section-label">— Follow Me —</div>
+      <h2 class="section-title">ติดตาม</h2>
+      <p class="contact-desc">
+        ติดตามเพื่อไม่พลาดผลงานใหม่ๆ
+      </p>
+      <div class="contact-cards">
+        <a href="https://www.youtube.com/@Shanom_" target="_blank" rel="noopener noreferrer"
+          class="contact-card contact-card--yt" id="contact-yt">
+          <div class="contact-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="36" height="36">
+              <path
+                d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+            </svg>
+          </div>
+          <div class="contact-label">YouTube</div>
+          <div class="contact-val">@Shanom_</div>
+        </a>
+        <a href="https://x.com/Shanom_" target="_blank" rel="noopener noreferrer" class="contact-card contact-card--x"
+          id="contact-x">
+          <div class="contact-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="36" height="36">
+              <path
+                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.261 5.634 5.903-5.634zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
+          </div>
+          <div class="contact-label">X (Twitter)</div>
+          <div class="contact-val">@Shanom_</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <img src="boba-cup.png" alt="Boba" class="footer-boba" />
+        <span>Shanom</span>
+      </div>
+      <p>Made with 🧋 & ❤️ by Shanom</p>
+      <p class="footer-copy">© 2025 Shanom. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
