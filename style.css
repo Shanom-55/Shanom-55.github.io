@@ -537,8 +537,8 @@ section {
 
 .works-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 2rem;
 }
 
 .work-card {
@@ -558,7 +558,8 @@ section {
 }
 
 .work-thumb {
-  height: 150px;
+  height: auto;
+  aspect-ratio: 16 / 9;
   display: flex;
   align-items: center;
   justify-content: center;

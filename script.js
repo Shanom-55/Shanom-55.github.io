@@ -147,9 +147,18 @@
 
   try {
     // 1. Fetch works from Firestore
-    const snapshot = await db.collection('works').orderBy('createdAt', 'desc').get();
+    const snapshot = await db.collection('works').get();
     const works = [];
     snapshot.forEach(doc => works.push({ id: doc.id, ...doc.data() }));
+
+    works.sort((a, b) => {
+      const orderA = a.orderIndex !== undefined ? a.orderIndex : 99999;
+      const orderB = b.orderIndex !== undefined ? b.orderIndex : 99999;
+      if (orderA !== orderB) return orderA - orderB;
+      const timeA = a.createdAt && a.createdAt.toMillis ? a.createdAt.toMillis() : 0;
+      const timeB = b.createdAt && b.createdAt.toMillis ? b.createdAt.toMillis() : 0;
+      return timeB - timeA;
+    });
 
     loader.style.display = 'none';
 
@@ -201,14 +210,6 @@
           <div class="work-card-inner">
             <div class="work-thumb ${typeClass} ${colorClass}">
               ${thumbContent}
-            </div>
-            <div class="work-info">
-              <h3>${escHtml(work.title)}</h3>
-              <p>${escHtml(work.description || '')}</p>
-              <div class="work-meta">
-                <span class="work-year">${escHtml(work.year || '')}</span>
-                <span class="work-tag">${escHtml(work.tag || '')}</span>
-              </div>
             </div>
           </div>
         </div>
