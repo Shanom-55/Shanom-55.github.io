@@ -128,16 +128,19 @@ for (const name of LOCAL) {
 
   console.log('\n=== chart generation (150 BPM, 17 bars) ===');
   const st = S();
-  check('124 notes generated', st.notes.length === 124, st.notes.length);
+  const N = st.notes.length;
+  const scoreFor = (n) => { let b = 0; for (let c = 1; c <= n; c++) b += Math.min(c, 50); return n * 100 + b; };
+  check('8th-notes-only chart: every note sits on an even 16th step', st.notes.every(n => n.step % 2 === 0));
+  check('120 notes generated (16ths removed)', N === 120, N);
   check('272 sixteenth steps (17 bars x 16)', st.totalSteps === 272, st.totalSteps);
   check('first note at leadIn 2.6s', Math.abs(st.notes[0].t - 2.6) < 1e-9, st.notes[0].t);
-  check('last note at 29.4s (step 268)', Math.abs(st.notes[123].t - 29.4) < 1e-9, st.notes[123].t);
+  check('last note at 29.4s (step 268)', Math.abs(st.notes[N - 1].t - 29.4) < 1e-9, st.notes[N - 1].t);
   check('song length = 29.8s', Math.abs(st.songLength - 29.8) < 1e-9, st.songLength);
   check('all lanes are 0-3', st.notes.every(n => n.lane >= 0 && n.lane <= 3));
   check('notes sorted by time', st.notes.every((n, i) => i === 0 || n.t >= st.notes[i - 1].t));
   check('step grid = 0.1s per 16th at 150 BPM',
-    Math.abs((st.notes[123].t - st.notes[0].t) / 268 - 0.1) < 1e-9,
-    (st.notes[123].t - st.notes[0].t) / 268);
+    Math.abs((st.notes[N - 1].t - st.notes[0].t) / 268 - 0.1) < 1e-9,
+    (st.notes[N - 1].t - st.notes[0].t) / 268);
   check('chart is straight: no triplet (3-step) gap anywhere (no swing)',
     st.notes.every((n, i) => i === 0 || (n.step - st.notes[i - 1].step) !== 3),
     st.notes.map((n, i) => i && (n.step - st.notes[i - 1].step)).filter(d => d === 3).length + ' triplet gaps');
@@ -153,17 +156,17 @@ for (const name of LOCAL) {
   const hitBlips = window.__osc - oscBefore;   // read before any await: press() is synchronous
   await sleep(40);
   const after = S();
-  check('all 124 notes judged', after.judged === 124, after.judged);
-  check('124 perfect, 0 miss', after.tally.perfect === 124 && after.tally.miss === 0, JSON.stringify(after.tally));
-  check('combo = 124', after.combo === 124, after.combo);
-  check('max combo = 124', after.maxCombo === 124, after.maxCombo);
-  const expectedScore = 124 * 100 + (50 * 51) / 2 + 74 * 50; // 100 + min(combo,50) each hit
-  check('score = 17375 (100 + min(combo,50) per hit)', after.score === expectedScore, after.score + ' vs ' + expectedScore);
-  check('HUD shows the score', document.querySelector('[data-hud="score"]').textContent === '17375',
+  check('all ' + N + ' notes judged', after.judged === N, after.judged);
+  check(N + ' perfect, 0 miss', after.tally.perfect === N && after.tally.miss === 0, JSON.stringify(after.tally));
+  check('combo = ' + N, after.combo === N, after.combo);
+  check('max combo = ' + N, after.maxCombo === N, after.maxCombo);
+  const expectedScore = scoreFor(N); // 100 + min(combo,50) each hit
+  check('score = ' + expectedScore + ' (100 + min(combo,50) per hit)', after.score === expectedScore, after.score + ' vs ' + expectedScore);
+  check('HUD shows the score', document.querySelector('[data-hud="score"]').textContent === String(expectedScore),
     document.querySelector('[data-hud="score"]').textContent);
   check('HUD accuracy = 100%', document.querySelector('[data-hud="acc"]').textContent === '100%',
     document.querySelector('[data-hud="acc"]').textContent);
-  check('every perfect hit = 2 oscillators (melody note + octave sparkle)', hitBlips === 248, hitBlips);
+  check('every perfect hit = 2 oscillators (melody note + octave sparkle)', hitBlips === N * 2, hitBlips);
 
   console.log('\n=== music sequencer scheduled the whole song ===');
   // walk the clock forward so the 25ms lookahead scheduler emits every step
@@ -174,9 +177,9 @@ for (const name of LOCAL) {
   const sched = S();
   check('all 272 steps scheduled', sched.nextStep === 272, sched.nextStep);
   // per bar: 4 kicks + 3 bass + (notes) oscillators; 2 snares + 8 hats buffer sources
-  const expectOsc = 17 * 4 + 17 * 3 + 124 + 248; // music + (note+sparkle) per perfect hit
+  const expectOsc = 17 * 4 + 17 * 3 + N + N * 2; // music + (note+sparkle) per perfect hit
   const expectBuf = 17 * 2 + 17 * 8;
-  check('oscillators = ' + expectOsc + ' (68 kick + 51 bass + 124 arp + 248 hit)',
+  check('oscillators = ' + expectOsc + ' (68 kick + 51 bass + ' + N + ' arp + ' + (N * 2) + ' hit)',
     window.__osc === expectOsc, window.__osc);
   check('noise sources = ' + expectBuf + ' (34 snare + 136 hat)', window.__buf === expectBuf, window.__buf);
   const minT = Math.min.apply(null, window.__when);
@@ -203,7 +206,7 @@ for (const name of LOCAL) {
   check('result screen opened', res.classList.contains('open'));
   check('rank = S for 100% accuracy', document.querySelector('.rhythm-rank').textContent === 'S',
     document.querySelector('.rhythm-rank').textContent);
-  check('result max combo = 124', document.querySelector('[data-res="combo"]').textContent === '124',
+  check('result max combo = ' + N, document.querySelector('[data-res="combo"]').textContent === String(N),
     document.querySelector('[data-res="combo"]').textContent);
   check('result accuracy = 100%', document.querySelector('[data-res="acc"]').textContent === '100%',
     document.querySelector('[data-res="acc"]').textContent);
