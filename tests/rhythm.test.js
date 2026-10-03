@@ -117,6 +117,7 @@ for (const name of LOCAL) {
   const launch = document.querySelector('.rhythm-launch');
   check('footer launcher button injected', !!launch && launch.closest('.footer-inner') !== null);
   check('launcher label is Thai by default', /เล่นมินิเกม/.test(launch.textContent), launch.textContent.trim());
+  check('launcher has no emoji', !/\p{Extended_Pictographic}/u.test(launch.textContent), launch.textContent);
   'rhythm'.split('').forEach(key);
   await sleep(30);
   check('typing "rhythm" opens the overlay', overlay().classList.contains('open'));
@@ -135,6 +136,9 @@ for (const name of LOCAL) {
   check('step grid = 0.1s per 16th at 150 BPM',
     Math.abs((st.notes[123].t - st.notes[0].t) / 268 - 0.1) < 1e-9,
     (st.notes[123].t - st.notes[0].t) / 268);
+  check('chart is straight: no triplet (3-step) gap anywhere (no swing)',
+    st.notes.every((n, i) => i === 0 || (n.step - st.notes[i - 1].step) !== 3),
+    st.notes.map((n, i) => i && (n.step - st.notes[i - 1].step)).filter(d => d === 3).length + ' triplet gaps');
 
   console.log('\n=== play the whole chart perfectly ===');
   const startAt = st.startAt;
@@ -157,7 +161,7 @@ for (const name of LOCAL) {
     document.querySelector('[data-hud="score"]').textContent);
   check('HUD accuracy = 100%', document.querySelector('[data-hud="acc"]').textContent === '100%',
     document.querySelector('[data-hud="acc"]').textContent);
-  check('every perfect hit fired a hit SFX (124 oscillators)', hitBlips === 124, hitBlips);
+  check('every perfect hit = 2 oscillators (melody note + octave sparkle)', hitBlips === 248, hitBlips);
 
   console.log('\n=== music sequencer scheduled the whole song ===');
   // walk the clock forward so the 25ms lookahead scheduler emits every step
@@ -168,9 +172,9 @@ for (const name of LOCAL) {
   const sched = S();
   check('all 272 steps scheduled', sched.nextStep === 272, sched.nextStep);
   // per bar: 4 kicks + 3 bass + (notes) oscillators; 2 snares + 8 hats buffer sources
-  const expectOsc = 17 * 4 + 17 * 3 + 124 + 124; // music + hit sfx
+  const expectOsc = 17 * 4 + 17 * 3 + 124 + 248; // music + (note+sparkle) per perfect hit
   const expectBuf = 17 * 2 + 17 * 8;
-  check('oscillators = ' + expectOsc + ' (68 kick + 51 bass + 124 arp + 124 hit sfx)',
+  check('oscillators = ' + expectOsc + ' (68 kick + 51 bass + 124 arp + 248 hit)',
     window.__osc === expectOsc, window.__osc);
   check('noise sources = ' + expectBuf + ' (34 snare + 136 hat)', window.__buf === expectBuf, window.__buf);
   const minT = Math.min.apply(null, window.__when);

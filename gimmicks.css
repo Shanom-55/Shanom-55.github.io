@@ -187,9 +187,9 @@
   animation: fadeSlideUp 0.8s ease both;
 }
 
+/* อีโมจิทักทายอยู่นิ่งๆ — ไม่ใส่อนิเมชั่นตามฟีดแบ็ก */
 .gx-hello-emoji {
   display: inline-block;
-  animation: bobble 3s ease-in-out infinite;
 }
 
 /* ===== 6. Pet the avatar ===== */

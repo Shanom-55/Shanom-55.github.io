@@ -36,7 +36,7 @@ const RHYTHM_GAME = {
     E: '0.1.2.3.2.1.0.3.',
     F: '01.2.30.12.3.01.',  // มี 16th แทรก
     G: '0.2.0.2.3.1.3.1.',
-    H: '0..0..1..1..2..3',  // triplet feel
+    H: '0.2.3...0.2.3...',  // 8th ตรงกริด (ไม่ swing) — โน้ตตกบนขั้น 8 พอดี
   };
   const ARRANGEMENT = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'C', 'D', 'E', 'F', 'G', 'H', 'C', 'D', 'A'];
 
@@ -141,24 +141,49 @@ const RHYTHM_GAME = {
     o.start(when); o.stop(when + 0.3);
   }
 
+  // เมโลดี้พื้นหลังเบาๆ — ดังพอให้เพลงครบ แต่เปิดพื้นที่ให้ "เสียงกด" เป็นตัวเล่นเมโลดี้
   function arp(when, freq) {
     const o = ac.createOscillator(), g = ac.createGain();
     o.type = 'triangle';
     o.frequency.setValueAtTime(freq, when);
-    env(g, when, 0.13, 0.2, 0.004);
+    env(g, when, 0.05, 0.2, 0.004);
     o.connect(g).connect(musicGain);
     o.start(when); o.stop(when + 0.24);
   }
 
-  function hitSfx(lane, perfect) {
+  // เสียงกด = โน้ตเมโลดี้ตัวเดียวกับที่เพลงเล่น ณ โน้ตนั้น (ไม่ล็อกเสียงสูงคงที่อีกต่อไป)
+  // ความดังตามเกรด: ยิ่งแม่นยิ่งดังและหวานขึ้น
+  function hitSfx(lane, grade) {
     if (!ac) return;
     const when = ac.currentTime;
     const o = ac.createOscillator(), g = ac.createGain();
-    o.type = perfect ? 'square' : 'triangle';
-    o.frequency.setValueAtTime(LANE_ARP[lane] * 2, when);
-    env(g, when, perfect ? 0.1 : 0.06, 0.09, 0.002);
-    o.connect(g).connect(master);
-    o.start(when); o.stop(when + 0.12);
+    o.type = 'triangle';
+    o.frequency.setValueAtTime(LANE_ARP[lane], when);
+    const vol = grade === 'perfect' ? 0.2 : grade === 'great' ? 0.15 : 0.11;
+    env(g, when, vol, 0.24, 0.003);
+    o.connect(g).connect(musicGain);
+    o.start(when); o.stop(when + 0.28);
+    if (grade === 'perfect') {
+      // คู่ 8 ของโน้ตเดียวกัน — ฟังเป็นเสียงเดียวกันแต่ใสขึ้น ไม่เพี้ยนออกจากคีย์
+      const o2 = ac.createOscillator(), g2 = ac.createGain();
+      o2.type = 'sine';
+      o2.frequency.setValueAtTime(LANE_ARP[lane] * 2, when);
+      env(g2, when, 0.05, 0.16, 0.002);
+      o2.connect(g2).connect(musicGain);
+      o2.start(when); o2.stop(when + 0.2);
+    }
+  }
+
+  // แตะพลาด/แตะลม: เสียง tick เบาๆ ไม่เป็นเมโลดี้ (กันกลบเพลง)
+  function tick() {
+    if (!ac || !noiseBuf) return;
+    const when = ac.currentTime;
+    const s = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
+    s.buffer = noiseBuf;
+    f.type = 'highpass'; f.frequency.value = 6000;
+    env(g, when, 0.03, 0.04);
+    s.connect(f).connect(g).connect(master);
+    s.start(when); s.stop(when + 0.06);
   }
 
   /* -----------------------------------------------
@@ -261,8 +286,7 @@ const RHYTHM_GAME = {
     resultEl.again.textContent = T('เล่นใหม่', 'Play again');
     resultEl.quit.textContent = T('ปิด', 'Close');
     if (launchBtn) {
-      launchBtn.innerHTML = '<span class="rhythm-launch-emoji">🎮</span> ' +
-        T('เล่นมินิเกมจังหวะ', 'Play the rhythm mini-game');
+      launchBtn.textContent = T('เล่นมินิเกมจังหวะ', 'Play the rhythm mini-game');
     }
   }
 
@@ -332,7 +356,7 @@ const RHYTHM_GAME = {
     combo++;
     maxCombo = Math.max(maxCombo, combo);
     score += ({ perfect: 100, great: 70, good: 40 })[g] + Math.min(combo, 50);
-    hitSfx(note.lane, g === 'perfect');
+    hitSfx(note.lane, g);
     pop(({ perfect: T('PERFECT', 'PERFECT'), great: 'GREAT', good: 'GOOD' })[g],
       ({ perfect: '#7DC97A', great: '#F0A870', good: '#E8C49A' })[g]);
     updateHud();
@@ -348,7 +372,7 @@ const RHYTHM_GAME = {
       if (dt < bestDt) { bestDt = dt; best = n; }
     }
     if (best && bestDt <= C.judge.miss) judge(best, bestDt);
-    else hitSfx(lane, false);
+    else tick();
   }
 
   /* -----------------------------------------------
