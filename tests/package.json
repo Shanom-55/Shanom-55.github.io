@@ -1,0 +1,12 @@
+{
+  "name": "shanom-site-tests",
+  "private": true,
+  "version": "1.0.0",
+  "description": "jsdom smoke tests for the boba gimmick pack and the rhythm mini-game",
+  "scripts": {
+    "test": "node gimmicks.test.js && node rhythm.test.js"
+  },
+  "devDependencies": {
+    "jsdom": "^30.1.1"
+  }
+}

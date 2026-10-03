@@ -138,6 +138,34 @@ function applyLanguage(lang) {
       this.blur = Math.random() * 3 + 0.5;
       this.wobble = Math.random() * Math.PI * 2;
       this.wobbleSpeed = (Math.random() - 0.5) * 0.02;
+      this.buildSprite();
+    }
+
+    // วาดไข่มุกลง offscreen canvas "ครั้งเดียว" (blur + gradient)
+    // แล้วแต่ละเฟรมแค่ drawImage — ถูกกว่ารัน ctx.filter ทุกเฟรมมาก
+    buildSprite() {
+      const pad = Math.ceil(this.blur * 3) + 2;
+      const R = this.r + pad;
+      const size = Math.ceil(R * 2);
+      const c = document.createElement('canvas');
+      c.width = size;
+      c.height = size;
+      const g = c.getContext('2d');
+      const cx = R, cy = R;
+      g.filter = 'blur(' + this.blur + 'px)';
+      const grad = g.createRadialGradient(
+        cx - this.r * 0.3, cy - this.r * 0.3, this.r * 0.05,
+        cx, cy, this.r
+      );
+      grad.addColorStop(0, this.highlight);
+      grad.addColorStop(0.45, this.color);
+      grad.addColorStop(1, this.color.replace(/[\d.]+\)$/, '0.1)'));
+      g.beginPath();
+      g.arc(cx, cy, this.r, 0, Math.PI * 2);
+      g.fillStyle = grad;
+      g.fill();
+      this.sprite = c;
+      this.half = R;
     }
 
     update() {
@@ -151,27 +179,13 @@ function applyLanguage(lang) {
     }
 
     draw(ctx) {
-      ctx.save();
       ctx.globalAlpha = this.opacity;
-      ctx.filter = `blur(${this.blur}px)`;
-
-      // Pearl body with radial gradient (3D-ish)
-      const grad = ctx.createRadialGradient(
-        this.x - this.r * 0.3, this.y - this.r * 0.3, this.r * 0.05,
-        this.x, this.y, this.r
-      );
-      grad.addColorStop(0, this.highlight);
-      grad.addColorStop(0.45, this.color);
-      grad.addColorStop(1, this.color.replace(/[\d.]+\)$/, '0.1)'));
-
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-      ctx.fillStyle = grad;
-      ctx.fill();
-
-      ctx.restore();
+      ctx.drawImage(this.sprite, this.x - this.half, this.y - this.half);
+      ctx.globalAlpha = 1;
     }
   }
+
+  let running = true;
 
   function init() {
     pearls = [];
@@ -181,6 +195,7 @@ function applyLanguage(lang) {
   }
 
   function loop() {
+    if (!running) return;
     ctx.clearRect(0, 0, W, H);
     for (const p of pearls) {
       p.update();
@@ -188,6 +203,17 @@ function applyLanguage(lang) {
     }
     animId = requestAnimationFrame(loop);
   }
+
+  // หยุดวาดเมื่อแท็บถูกซ่อน (rAF ก็หยุดเอง แต่กัน loop ค้าง)
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      running = false;
+      cancelAnimationFrame(animId);
+    } else if (!running) {
+      running = true;
+      loop();
+    }
+  });
 
   resize();
   init();
@@ -219,8 +245,7 @@ function applyLanguage(lang) {
       navLinks.style.position = 'absolute';
       navLinks.style.top = '70px';
       navLinks.style.right = '2rem';
-      navLinks.style.background = 'rgba(253,250,246,0.95)';
-      navLinks.style.backdropFilter = 'blur(16px)';
+      navLinks.style.background = 'rgba(253,250,246,0.98)';
       navLinks.style.padding = '1rem 1.5rem';
       navLinks.style.borderRadius = '16px';
       navLinks.style.boxShadow = '0 8px 30px rgba(196,133,90,0.15)';
@@ -274,7 +299,7 @@ function applyLanguage(lang) {
 
         if (videoId) {
           thumbContent = `
-            <iframe width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}?rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+            <iframe loading="lazy" width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}?rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
           `;
         }
       }
@@ -403,14 +428,21 @@ function escHtml(str) {
   const wrap = document.querySelector('.hero-avatar-wrap');
   if (!wrap) return;
 
+  // throttle ด้วย rAF — อัปเดต transform อย่างมากเฟรมละครั้งแทนทุก mousemove
+  let mx = 0, my = 0, queued = false;
   document.addEventListener('mousemove', (e) => {
-    const cx = window.innerWidth / 2;
-    const cy = window.innerHeight / 2;
-    const dx = (e.clientX - cx) / cx;
-    const dy = (e.clientY - cy) / cy;
-
-    wrap.style.transform = `translate(${dx * 10}px, ${dy * 8}px)`;
-  });
+    mx = e.clientX; my = e.clientY;
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => {
+      queued = false;
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
+      const dx = (mx - cx) / cx;
+      const dy = (my - cy) / cy;
+      wrap.style.transform = `translate(${dx * 10}px, ${dy * 8}px)`;
+    });
+  }, { passive: true });
 })();
 
 // (Wave hover logic moved to initWorks function)
