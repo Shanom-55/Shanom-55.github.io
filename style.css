@@ -77,12 +77,13 @@ button {
   right: 0;
   z-index: 100;
   padding: 1rem 2rem;
-  transition: background var(--transition), box-shadow var(--transition), backdrop-filter var(--transition);
+  transition: background var(--transition), box-shadow var(--transition);
 }
 
+/* ไม่ใช้ backdrop-filter (สาเหตุหลักของอาการแล็คตอนเลื่อน)
+   ชดเชยด้วยความทึบ 0.92 — มองดูแทบเหมือนเดิม */
 #navbar.scrolled {
-  background: rgba(253, 250, 246, 0.85);
-  backdrop-filter: blur(16px);
+  background: rgba(253, 250, 246, 0.92);
   box-shadow: 0 4px 30px var(--shadow-boba);
 }
 
@@ -720,8 +721,7 @@ section {
   position: absolute;
   bottom: 10px;
   right: 12px;
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.9);
   color: var(--brown-dark);
   font-size: 0.7rem;
   font-weight: 600;

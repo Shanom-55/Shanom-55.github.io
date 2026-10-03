@@ -68,7 +68,7 @@ const dom = new JSDOM(fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8'), {
       clearRect() {}, fillRect() {}, save() {}, restore() {}, beginPath() {}, closePath() {},
       moveTo() {}, lineTo() {}, arc() {}, arcTo() {}, fill() {}, stroke() {}, scale() {},
       roundRect() {}, fillText() {}, measureText: () => ({ width: 10 }),
-      createRadialGradient: () => ({ addColorStop() {} }),
+      drawImage() {}, createRadialGradient: () => ({ addColorStop() {} }),
       set fillStyle(v) { this.__f = v; }, get fillStyle() { return this.__f || ''; },
       strokeStyle: '', lineWidth: 1, globalAlpha: 1, font: '', textAlign: '', filter: '',
     });

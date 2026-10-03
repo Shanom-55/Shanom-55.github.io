@@ -44,9 +44,8 @@
   align-items: center;
   justify-content: center;
   padding: 1rem;
-  background: rgba(28, 18, 10, 0.78);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
+  /* ไม่ใช้ backdrop-filter เต็มจอ — มันกินเฟรมเรตตอนเกมกำลังวาด canvas */
+  background: rgba(28, 18, 10, 0.88);
   opacity: 0;
   transition: opacity 0.25s ease;
 }

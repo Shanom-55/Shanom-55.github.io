@@ -52,7 +52,7 @@ const dom = new JSDOM(fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8'), {
 
     window.HTMLCanvasElement.prototype.getContext = () => ({
       clearRect() {}, save() {}, restore() {}, beginPath() {}, arc() {}, fill() {},
-      createRadialGradient: () => ({ addColorStop() {} }),
+      drawImage() {}, createRadialGradient: () => ({ addColorStop() {} }),
       set fillStyle(v) {}, get fillStyle() { return ''; }, globalAlpha: 1, filter: '',
     });
 
@@ -199,6 +199,16 @@ for (const name of LOCAL) {
   const shown = [...document.querySelectorAll('.work-card')].filter(c => c.style.display !== 'none');
   check('lyrics tab shows only the lyrics card', shown.length === 1 && shown[0].dataset.tab === 'lyrics',
     shown.map(c => c.dataset.tab).join(','));
+
+  console.log('\n=== performance guards ===');
+  const jsSrc = fs.readFileSync(path.join(ROOT, 'script.js'), 'utf8');
+  const cssSrc = fs.readFileSync(path.join(ROOT, 'style.css'), 'utf8');
+  check('boba canvas draws cached sprites (drawImage), no per-frame ctx.filter',
+    jsSrc.includes('drawImage(this.sprite') && !jsSrc.includes('ctx.filter ='));
+  check('canvas loop pauses on hidden tab', jsSrc.includes('visibilitychange'));
+  check('hero parallax is rAF-throttled', jsSrc.includes('queued'));
+  check('YouTube iframes lazy-load', jsSrc.includes('loading=\"lazy\"'));
+  check('no backdrop-filter declaration left in style.css', !/backdrop-filter\s*:/.test(cssSrc));
 
   console.log('\n' + (fail === 0 ? 'ALL PASS' : 'FAILURES') + '  —  ' + pass + ' passed, ' + fail + ' failed');
   window.close();
