@@ -123,6 +123,8 @@ for (const name of LOCAL) {
   check('typing "rhythm" opens the overlay', overlay().classList.contains('open'));
   check('page scroll locked while playing', document.body.style.overflow === 'hidden', document.body.style.overflow);
   check('game state is playing', S().playing === true);
+  check('in-game title has no emoji', !/\p{Extended_Pictographic}/u.test(document.querySelector('.rhythm-title').textContent),
+    document.querySelector('.rhythm-title').textContent);
 
   console.log('\n=== chart generation (150 BPM, 17 bars) ===');
   const st = S();

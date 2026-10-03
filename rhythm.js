@@ -2,7 +2,7 @@
    Shanom Portfolio — rhythm.js
    🎮 Boba Rhythm — 4-key mini rhythm game
    เพลง + ชาร์ตโน้ตถูก generate จาก grid เดียวกัน (WebAudio ล้วนๆ ไม่มีไฟล์เสียง)
-   เปิดเกม: พิมพ์คำว่า "rhythm" หรือกดปุ่ม 🎮 ใน footer
+   เปิดเกม: พิมพ์คำว่า "rhythm" หรือกดปุ่มใน footer
    ============================================ */
 
 const RHYTHM_GAME = {
@@ -203,7 +203,7 @@ const RHYTHM_GAME = {
     overlay.innerHTML =
       '<div class="rhythm-panel" tabindex="-1">' +
       '  <div class="rhythm-head">' +
-      '    <div class="rhythm-title">🎮 <span class="rt-name">Boba Rhythm</span></div>' +
+      '    <div class="rhythm-title"><span class="rt-name">Boba Rhythm</span></div>' +
       '    <button type="button" class="rhythm-close" aria-label="Close">✕</button>' +
       '  </div>' +
       '  <div class="rhythm-hud">' +
